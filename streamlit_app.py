@@ -1,7 +1,36 @@
 import streamlit as st
 from openai import OpenAI
 import os
+# ==> THÊM DEBUG CODE NÀY <=== 
+st.write("🔍 **Debug Information:**")
+st.write("Available secrets keys:", list(st.secrets.keys()))
 
+if "OPENAI_API_KEY" in st.secrets:
+    api_key = st.secrets["OPENAI_API_KEY"]
+    st.write(f"✅ API key found: {api_key[:15]}...")
+    st.write(f"API key length: {len(api_key)}")
+    
+    # Test OpenAI client
+    try:
+        client = OpenAI(api_key=api_key)
+        st.write("✅ OpenAI client created successfully")
+        
+        # Test simple API call
+        test_response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": "Hello"}],
+            max_tokens=5
+        )
+        st.write("✅ API call successful!")
+        
+    except Exception as e:
+        st.write(f"❌ Error: {e}")
+        
+else:
+    st.write("❌ OPENAI_API_KEY not found in secrets")
+
+st.write("---")
+# ==> KẾT THÚC DEBUG CODE <===
 # Hàm đọc nội dung từ file văn bản
 def rfile(name_file):
     with open(name_file, "r", encoding="utf-8") as file:
